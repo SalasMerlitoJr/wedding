@@ -126,6 +126,7 @@ input,textarea,select{ font-family: inherit; }
 .btn--ghost{
   border: 1px solid var(--line);
   background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   color: var(--text);
 }
@@ -218,6 +219,7 @@ input,textarea,select{ font-family: inherit; }
   display:flex; align-items:center; justify-content:space-between;
   padding: 1rem clamp(1.25rem,4vw,2.5rem);
   background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
   backdrop-filter: blur(14px) saturate(1.4);
   border-bottom: 1px solid var(--glass-border);
   transform: translateY(-110%);
@@ -452,7 +454,8 @@ input,textarea,select{ font-family: inherit; }
 }
 .countdown__unit{
   min-width: 84px; padding: 1.1rem .6rem; text-align:center; border-radius: var(--radius-md);
-  background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(8px);
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   box-shadow: var(--shadow);
 }
 .countdown__value{
@@ -587,7 +590,7 @@ input,textarea,select{ font-family: inherit; }
 /* Modal */
 .modal{ position:fixed; inset:0; z-index:900; display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden; transition: opacity .4s var(--ease), visibility .4s; }
 .modal.is-open{ opacity:1; visibility:visible; }
-.modal__backdrop{ position:absolute; inset:0; background: rgba(20,15,10,.55); backdrop-filter: blur(3px); }
+.modal__backdrop{ position:absolute; inset:0; background: rgba(20,15,10,.55); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
 .modal__panel{
   position:relative; background: var(--surface); border-radius: var(--radius-lg); padding: 2.4rem;
   max-width: 380px; text-align:center; box-shadow: var(--shadow);
@@ -670,7 +673,8 @@ input,textarea,select{ font-family: inherit; }
 .music-player{
   position: fixed; bottom: 1.4rem; left: 1.4rem; z-index: 400;
   display:flex; align-items:center; gap:.6rem;
-  background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   border-radius: 999px; padding: .5rem .9rem .5rem .5rem; box-shadow: var(--shadow);
 }
 .music-player__toggle{
