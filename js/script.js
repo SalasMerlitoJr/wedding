@@ -52,7 +52,11 @@
       openInvitation(true);
     }
 
-    openBtn?.addEventListener("click", () => openInvitation(false));
+    openBtn?.addEventListener("click", () => {
+      openBtn.classList.add("is-opening");
+      openBtn.disabled = true;
+      setTimeout(() => openInvitation(false), 320);
+    });
 
     function openInvitation(instant) {
       gate?.classList.add("is-hidden");
@@ -130,6 +134,55 @@
     sections.forEach((s) => spy.observe(s));
   }
 
+  /* ---------- Nav magnify (dock-style) ---------- */
+  function initNavMagnify() {
+    const menu = document.getElementById("site-nav-menu");
+    if (!menu) return;
+    const items = Array.from(menu.querySelectorAll("li"));
+    if (!items.length) return;
+
+    const MAX_SCALE = 1.55;
+    const MAX_LIFT = 10;
+    const SPREAD = 110; // px influence radius
+    const isDesktop = () => window.matchMedia("(min-width: 861px)").matches;
+    let ticking = false;
+
+    function reset() {
+      items.forEach((li) => {
+        li.style.transform = "";
+        li.style.setProperty("--magnify-scale", "1");
+      });
+    }
+
+    function apply(clientX) {
+      items.forEach((li) => {
+        const rect = li.getBoundingClientRect();
+        const center = rect.left + rect.width / 2;
+        const dist = Math.abs(clientX - center);
+        const influence = Math.max(0, 1 - dist / SPREAD);
+        const eased = influence * influence * (3 - 2 * influence); // smoothstep
+        const scale = 1 + (MAX_SCALE - 1) * eased;
+        const lift = -MAX_LIFT * eased;
+        li.style.transform = `translateY(${lift}px) scale(${scale})`;
+        li.style.setProperty("--magnify-scale", String(scale));
+        li.style.zIndex = eased > 0.05 ? "2" : "1";
+      });
+    }
+
+    menu.addEventListener("mousemove", (e) => {
+      if (!isDesktop()) return;
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        apply(e.clientX);
+        ticking = false;
+      });
+    });
+
+    menu.addEventListener("mouseleave", reset);
+    window.addEventListener("resize", () => { if (!isDesktop()) reset(); });
+  }
+
   /* ---------- Scroll reveal ---------- */
   function initScrollReveal() {
     const targets = document.querySelectorAll(".reveal-on-scroll");
@@ -187,49 +240,200 @@
     if (link) link.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(VENUE_QUERY)}`;
   }
 
-  /* ---------- Gallery + Lightbox ---------- */
-  function initGallery() {
-    const items = Array.from(document.querySelectorAll(".gallery__item"));
-    const lightbox = document.getElementById("lightbox");
-    const img = document.getElementById("lightbox-image");
-    const caption = document.getElementById("lightbox-caption");
-    const closeBtn = document.getElementById("lightbox-close");
-    const prevBtn = document.getElementById("lightbox-prev");
-    const nextBtn = document.getElementById("lightbox-next");
-    if (!items.length || !lightbox || !img) return;
+  /* ---------- Radial Photo Carousel ---------- */
+  function initRadialCarousel() {
+    const stage = document.getElementById("carousel-stage");
+    const ring = document.getElementById("carousel-ring");
+    const dotsWrap = document.getElementById("carousel-dots");
+    const prevBtn = document.getElementById("carousel-prev");
+    const nextBtn = document.getElementById("carousel-next");
+    if (!stage || !ring || !dotsWrap) return;
 
-    let currentIndex = 0;
+    const items = Array.from(ring.querySelectorAll(".radial-carousel__item"));
+    if (!items.length) return;
 
-    function openAt(index) {
-      currentIndex = (index + items.length) % items.length;
-      const item = items[currentIndex];
-      const image = item.querySelector("img");
-      const cap = item.querySelector(".gallery__caption");
-      img.src = image ? image.currentSrc || image.src : "";
-      img.alt = image ? image.alt : "";
-      if (caption) caption.textContent = cap ? cap.textContent : "";
-      lightbox.classList.add("is-open");
-      lightbox.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
+    const count = items.length;
+    const angleStep = 360 / count;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let currentRotation = 0;
+    let activeIndex = 0;
+    let autoplayTimer = null;
+    let dragging = false;
+    let dragMoved = false;
+    let startX = 0;
+    let startRotation = 0;
+    let suppressNextClick = false;
+
+    function layout() {
+      const stageSize = stage.clientWidth;
+      const itemSize = parseFloat(getComputedStyle(stage).getPropertyValue("--item-size")) || 90;
+      const radius = stageSize / 2 - itemSize / 2 - 6;
+      items.forEach((item, i) => {
+        const angle = i * angleStep;
+        item.style.transform = `translate(-50%,-50%) rotate(${angle}deg) translateY(-${radius}px) rotate(${-angle}deg)`;
+      });
+      update();
     }
-    function close() {
-      lightbox.classList.remove("is-open");
-      lightbox.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
+
+    function update() {
+      ring.style.transform = `rotate(${currentRotation}deg)`;
+      let bestDiff = Infinity;
+      let bestIdx = 0;
+      items.forEach((item, i) => {
+        const angle = i * angleStep;
+        const inner = item.querySelector(".radial-carousel__inner");
+        if (inner) inner.style.transform = `rotate(${-(currentRotation + angle)}deg)`;
+        let total = (currentRotation + angle) % 360;
+        if (total < 0) total += 360;
+        const diff = Math.min(total, 360 - total);
+        if (diff < bestDiff) { bestDiff = diff; bestIdx = i; }
+      });
+      items.forEach((item, i) => item.classList.toggle("is-active", i === bestIdx));
+      activeIndex = bestIdx;
+      updateDots();
     }
 
-    items.forEach((item, index) => item.addEventListener("click", () => openAt(index)));
-    closeBtn?.addEventListener("click", close);
-    prevBtn?.addEventListener("click", () => openAt(currentIndex - 1));
-    nextBtn?.addEventListener("click", () => openAt(currentIndex + 1));
-    lightbox.addEventListener("click", (e) => { if (e.target === lightbox) close(); });
-    document.addEventListener("keydown", (e) => {
-      if (!lightbox.classList.contains("is-open")) return;
-      if (e.key === "Escape") close();
-      if (e.key === "ArrowLeft") openAt(currentIndex - 1);
-      if (e.key === "ArrowRight") openAt(currentIndex + 1);
+    function rotateTo(targetIndex) {
+      const target = -targetIndex * angleStep;
+      let delta = (target - currentRotation) % 360;
+      if (delta > 180) delta -= 360;
+      if (delta < -180) delta += 360;
+      currentRotation += delta;
+      update();
+    }
+
+    function buildDots() {
+      dotsWrap.innerHTML = "";
+      items.forEach((_, i) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "radial-carousel__dot";
+        dot.setAttribute("aria-label", `Go to photo ${i + 1}`);
+        dot.addEventListener("click", () => { rotateTo(i); restartAutoplay(); });
+        dotsWrap.appendChild(dot);
+      });
+    }
+    function updateDots() {
+      Array.from(dotsWrap.children).forEach((d, i) => d.classList.toggle("is-active", i === activeIndex));
+    }
+
+    function startAutoplay() {
+      if (reduceMotion) return;
+      stopAutoplay();
+      autoplayTimer = setInterval(() => rotateTo((activeIndex + 1) % count), 4200);
+    }
+    function stopAutoplay() { if (autoplayTimer) clearInterval(autoplayTimer); autoplayTimer = null; }
+    function restartAutoplay() { stopAutoplay(); startAutoplay(); }
+
+    prevBtn?.addEventListener("click", () => { rotateTo((activeIndex - 1 + count) % count); restartAutoplay(); });
+    nextBtn?.addEventListener("click", () => { rotateTo((activeIndex + 1) % count); restartAutoplay(); });
+
+    /* Drag to spin */
+    function onPointerDown(e) {
+      dragging = true;
+      dragMoved = false;
+      startX = e.clientX;
+      startRotation = currentRotation;
+      ring.classList.add("is-dragging");
+      ring.setPointerCapture?.(e.pointerId);
+      stopAutoplay();
+    }
+    function onPointerMove(e) {
+      if (!dragging) return;
+      const deltaX = e.clientX - startX;
+      if (Math.abs(deltaX) > 4) dragMoved = true;
+      currentRotation = startRotation + deltaX * 0.4;
+      update();
+    }
+    function onPointerUp() {
+      if (!dragging) return;
+      dragging = false;
+      ring.classList.remove("is-dragging");
+      if (dragMoved) {
+        rotateTo(activeIndex);
+        suppressNextClick = true;
+        setTimeout(() => { suppressNextClick = false; }, 60);
+      }
+      restartAutoplay();
+    }
+
+    ring.addEventListener("pointerdown", onPointerDown);
+    ring.addEventListener("pointermove", onPointerMove);
+    ring.addEventListener("pointerup", onPointerUp);
+    ring.addEventListener("pointercancel", onPointerUp);
+    ring.addEventListener("click", (e) => {
+      if (suppressNextClick) { e.stopPropagation(); e.preventDefault(); }
+    }, true);
+
+    stage.addEventListener("mouseenter", stopAutoplay);
+    stage.addEventListener("mouseleave", startAutoplay);
+    stage.addEventListener("focusin", stopAutoplay);
+    stage.addEventListener("focusout", startAutoplay);
+
+    let resizeTimer = null;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(layout, 150);
     });
+
+    buildDots();
+    layout();
+    startAutoplay();
   }
+
+  /* ---------- Gallery + Lightbox ---------- */
+  /* ---------- Gallery + Lightbox ---------- */
+function initGallery() {
+  const items = Array.from(document.querySelectorAll(".gallery__item"));
+  const lightbox = document.getElementById("lightbox");
+  const img = document.getElementById("lightbox-image");
+  const caption = document.getElementById("lightbox-caption");
+  const closeBtn = document.getElementById("lightbox-close");
+  const prevBtn = document.getElementById("lightbox-prev");
+  const nextBtn = document.getElementById("lightbox-next");
+  if (!items.length || !lightbox || !img) return;
+
+  let currentIndex = 0;
+
+  function openAt(index) {
+    currentIndex = (index + items.length) % items.length;
+    const item = items[currentIndex];
+    const image = item.querySelector("img");
+    const cap = item.querySelector(".gallery__caption, .caption");
+    img.src = image ? image.currentSrc || image.src : "";
+    img.alt = image ? image.alt : "";
+    if (caption) caption.textContent = cap ? cap.textContent : "";
+    lightbox.classList.add("is-open");
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function close() {
+    lightbox.classList.remove("is-open");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+
+  items.forEach((item, index) => {
+    item.addEventListener("click", (e) => {
+      // Prevent opening lightbox if item was actively being dragged
+      if (item.closest('#carousel-ring')?.classList.contains('is-dragging')) return;
+      openAt(index);
+    });
+  });
+
+  closeBtn?.addEventListener("click", close);
+  prevBtn?.addEventListener("click", () => openAt(currentIndex - 1));
+  nextBtn?.addEventListener("click", () => openAt(currentIndex + 1));
+  lightbox.addEventListener("click", (e) => { if (e.target === lightbox) close(); });
+  document.addEventListener("keydown", (e) => {
+    if (!lightbox.classList.contains("is-open")) return;
+    if (e.key === "Escape") close();
+    if (e.key === "ArrowLeft") openAt(currentIndex - 1);
+    if (e.key === "ArrowRight") openAt(currentIndex + 1);
+  });
+}
 
   /* ---------- RSVP form validation ---------- */
   function initRSVP() {
@@ -484,10 +688,12 @@
     initTheme();
     initSealGate();
     initNav();
+    initNavMagnify();
     initNavVisibility();
     initScrollReveal();
     initCountdown();
     initMapLink();
+    // initRadialCarousel(); // replaced with static photo-grid gallery
     initGallery();
     initRSVP();
     initGuestbook();
