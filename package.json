@@ -1,0 +1,16 @@
+{
+  "name": "merlito-daisa-wedding-invitation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Wedding invitation website for Merlito Salas Jr. & Daisa Ballozos",
+  "scripts": {
+    "build:ts": "tsc",
+    "build:css": "sass scss/style.scss css/style.css --style=compressed",
+    "build": "npm run build:ts && npm run build:css",
+    "serve": "npx serve ."
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "sass": "^1.77.0"
+  }
+}

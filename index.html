@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Merlito &amp; Daisa — Wedding Invitation</title>
+<meta name="description" content="Together with their families, Merlito Salas Jr. and Daisa Ballozos joyfully invite you to celebrate their wedding day.">
+<meta property="og:title" content="Merlito &amp; Daisa — We're Getting Married">
+<meta property="og:description" content="You're invited to our wedding celebration.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500;600&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== Ambient sprig canvas (behind everything) ===== -->
+<canvas id="sprig-canvas" aria-hidden="true"></canvas>
+
+<!-- ===== Seal Loader / Entry Gate ===== -->
+<div id="seal-gate" class="seal-gate">
+  <div class="seal-gate__inner">
+    <p class="seal-gate__eyebrow">The Wedding Of</p>
+    <h1 class="seal-gate__names">Merlito <span class="amp">&amp;</span> Daisa</h1>
+    <button id="open-invite" class="wax-seal" aria-label="Open the invitation">
+      <span class="wax-seal__ring"></span>
+      <span class="wax-seal__initials">M&nbsp;D</span>
+    </button>
+    <p class="seal-gate__hint">tap the seal to open</p>
+  </div>
+</div>
+
+<!-- ===== Top Navigation ===== -->
+<nav id="site-nav" class="site-nav" aria-label="Primary">
+  <div class="site-nav__brand">M&nbsp;&amp;&nbsp;D</div>
+  <button id="nav-toggle" class="site-nav__toggle" aria-expanded="false" aria-controls="site-nav-menu" aria-label="Toggle navigation menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul id="site-nav-menu" class="site-nav__menu">
+    <li><a href="#couple" data-nav>Our Story</a></li>
+    <li><a href="#details" data-nav>Details</a></li>
+    <li><a href="#gallery" data-nav>Gallery</a></li>
+    <li><a href="#program" data-nav>Program</a></li>
+    <li><a href="#rsvp" data-nav>RSVP</a></li>
+    <li><a href="#registry" data-nav>Registry</a></li>
+    <li><a href="#guestbook" data-nav>Guestbook</a></li>
+  </ul>
+  <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark and light mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.4 4.4l1.7 1.7M17.9 17.9l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.4 19.6l1.7-1.7M17.9 6.1l1.7-1.7"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/></svg>
+  </button>
+</nav>
+
+<main id="invitation" class="invitation" hidden>
+
+  <!-- ===== 1. HERO ===== -->
+  <header class="hero" id="hero">
+    <div class="hero__particles" aria-hidden="true"></div>
+    <div class="hero__frame">
+      <p class="hero__eyebrow reveal">Together with their families</p>
+      <h1 class="hero__names">
+        <span class="reveal reveal--delay-1">Merlito</span>
+        <span class="hero__amp reveal reveal--delay-2">&amp;</span>
+        <span class="reveal reveal--delay-3">Daisa</span>
+      </h1>
+      <p class="hero__tagline reveal reveal--delay-4">request the honor of your presence</p>
+      <div class="hero__meta reveal reveal--delay-5">
+        <time datetime="2027-02-14" class="hero__date">14 · February · 2027</time>
+        <span class="hero__divider" aria-hidden="true">✦</span>
+        <span class="hero__venue">Sage &amp; Ivory Garden Estate, Cagayan de Oro</span>
+      </div>
+      <a href="#couple" class="btn btn--ghost hero__scroll reveal reveal--delay-6">
+        <span>Begin the Story</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v15M6 13l6 6 6-6"/></svg>
+      </a>
+    </div>
+    <div class="hero__scrim" aria-hidden="true"></div>
+  </header>
+
+  <!-- ===== 2. COUPLE INTRODUCTION ===== -->
+  <section class="section couple" id="couple">
+    <p class="section__eyebrow reveal-on-scroll">The Couple</p>
+    <h2 class="section__title reveal-on-scroll">Two Hearts, One Story</h2>
+
+    <div class="couple__cards">
+      <article class="couple-card reveal-on-scroll">
+        <div class="couple-card__photo">
+          <img src="assets/picture/2X2 PIC.PNG" alt="Portrait of Merlito Salas Jr." loading="lazy" onerror="this.parentElement.classList.add('is-placeholder')">
+          <span class="couple-card__placeholder-label">Photo of the Groom</span>
+        </div>
+        <h3 class="couple-card__name">Merlito Salas Jr.</h3>
+        <p class="couple-card__role">The Groom</p>
+        <p class="couple-card__bio">A steady, quietly determined soul who builds things that last — in work and in love. Merlito brings warmth, patience, and an easy laugh to every room he enters.</p>
+      </article>
+
+      <div class="couple__center reveal-on-scroll" aria-hidden="true">
+        <span class="couple__monogram">M<span class="couple__monogram-amp">&amp;</span>D</span>
+      </div>
+
+      <article class="couple-card reveal-on-scroll">
+        <div class="couple-card__photo">
+          <img src="assets/picture/daisa.jpg" alt="Portrait of Daisa Ballozos" loading="lazy" onerror="this.parentElement.classList.add('is-placeholder')">
+          <span class="couple-card__placeholder-label">Photo of the Bride</span>
+        </div>
+        <h3 class="couple-card__name">Daisa Ballozos</h3>
+        <p class="couple-card__role">The Bride</p>
+        <p class="couple-card__bio">Radiant, thoughtful, and endlessly kind. Daisa carries grace into everything she touches, and has a gift for making every person around her feel truly seen.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== 3. LOVE STORY TIMELINE ===== -->
+  <section class="section timeline-section" id="story">
+    <p class="section__eyebrow reveal-on-scroll">Our Journey</p>
+    <h2 class="section__title reveal-on-scroll">The Love Story</h2>
+
+    <ol class="timeline">
+      <li class="timeline__item reveal-on-scroll">
+        <div class="timeline__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.2"/><path d="M5 21c1-4.5 4-6.5 7-6.5s6 2 7 6.5"/></svg>
+        </div>
+        <div class="timeline__content">
+          <span class="timeline__date">March 2026</span>
+          <h3>First Meeting</h3>
+          <!-- <p>A chance introduction through mutual friends turned into a conversation that neither of them wanted to end.</p> -->
+        </div>
+      </li>
+      <li class="timeline__item reveal-on-scroll">
+        <div class="timeline__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7-4.35-9.5-8.8C.8 7.8 3 4.5 6.4 4.5c2 0 3.4 1.1 4.1 2.4.7-1.3 2.1-2.4 4.1-2.4 3.4 0 5.6 3.3 3.9 6.7C19 15.65 12 20 12 20Z"/></svg>
+        </div>
+        <div class="timeline__content">
+          <span class="timeline__date">September 2026</span>
+          <h3>First Date</h3>
+          <!-- <p>Coffee that was meant to last an hour stretched into the evening — the first of many nights spent talking about everything and nothing.</p> -->
+        </div>
+      </li>
+      <li class="timeline__item reveal-on-scroll">
+        <div class="timeline__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 10a6 6 0 1 1 12 0c0 4-6 10-6 10S6 14 6 10Z"/><circle cx="12" cy="10" r="2"/></svg>
+        </div>
+        <div class="timeline__content">
+          <span class="timeline__date">December 2025</span>
+          <h3>The Proposal</h3>
+          <!-- <p>Under string lights and a quiet sky, Merlito asked, and Daisa said yes before he could even finish the question.</p> -->
+        </div>
+      </li>
+      <li class="timeline__item reveal-on-scroll">
+        <div class="timeline__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v5"/></svg>
+        </div>
+        <div class="timeline__content">
+          <span class="timeline__date">14 February 2027</span>
+          <h3>The Wedding Day</h3>
+          <!-- <p>The next chapter begins — surrounded by the family and friends who mean the most to them.</p> -->
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ===== 4. EVENT DETAILS + COUNTDOWN ===== -->
+  <section class="section details" id="details">
+    <p class="section__eyebrow reveal-on-scroll">Save the Date</p>
+    <h2 class="section__title reveal-on-scroll">Wedding Details</h2>
+
+    <div class="countdown reveal-on-scroll" id="countdown" aria-live="polite">
+      <div class="countdown__unit"><span class="countdown__value" id="cd-days">00</span><span class="countdown__label">Days</span></div>
+      <div class="countdown__unit"><span class="countdown__value" id="cd-hours">00</span><span class="countdown__label">Hours</span></div>
+      <div class="countdown__unit"><span class="countdown__value" id="cd-mins">00</span><span class="countdown__label">Minutes</span></div>
+      <div class="countdown__unit"><span class="countdown__value" id="cd-secs">00</span><span class="countdown__label">Seconds</span></div>
+    </div>
+
+    <div class="details__grid">
+      <article class="detail-card reveal-on-scroll">
+        <div class="detail-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s7-5.2 7-11.2A7 7 0 0 0 5 9.8C5 15.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg>
+        </div>
+        <h3>Ceremony</h3>
+        <p class="detail-card__time">14 February 2027 · 2:00 PM</p>
+        <p class="detail-card__venue">St. Augustine Metropolitan Cathedral<br>Cagayan de Oro City</p>
+      </article>
+
+      <article class="detail-card reveal-on-scroll">
+        <div class="detail-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10h16l-1.5 9h-13L4 10Z"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        </div>
+        <h3>Reception</h3>
+        <p class="detail-card__time">14 February 2027 · 5:00 PM</p>
+        <p class="detail-card__venue">Sage &amp; Ivory Garden Estate<br>Carmen, Cagayan de Oro City</p>
+      </article>
+
+      <article class="detail-card detail-card--map reveal-on-scroll">
+        <div class="map-placeholder">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s7-5.2 7-11.2A7 7 0 0 0 5 9.8C5 15.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg>
+          <span>Interactive map will appear here</span>
+          <a href="#" class="map-placeholder__link" id="map-link" target="_blank" rel="noopener">Open in Google Maps</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== 5. PHOTO GALLERY ===== -->
+  <section class="section gallery-section" id="gallery">
+    <p class="section__eyebrow reveal-on-scroll">Moments</p>
+    <h2 class="section__title reveal-on-scroll">Photo Gallery</h2>
+
+    <div class="gallery" id="gallery-grid">
+      <!-- gallery items injected/enhanced by script.js; placeholders below -->
+      <button class="gallery__item reveal-on-scroll" data-index="0" style="--span:2;"><img src="assets/together/1.jpg" alt="Merlito and Daisa, moment one" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')"><span class="gallery__caption">The Proposal</span></button>
+      <button class="gallery__item reveal-on-scroll" data-index="1"><img src="assets/together/2.jpg" alt="Merlito and Daisa, moment two" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')"><span class="gallery__caption">Prenup Session</span></button>
+      <button class="gallery__item reveal-on-scroll" data-index="2"><img src="assets/together/3.jpg" alt="Merlito and Daisa, moment three" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')"><span class="gallery__caption">By the Garden</span></button>
+      <button class="gallery__item reveal-on-scroll" data-index="3" style="--span:2;"><img src="assets/together/4.jpg" alt="Merlito and Daisa, moment four" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')"><span class="gallery__caption">Golden Hour</span></button>
+      <button class="gallery__item reveal-on-scroll" data-index="4"><img src="assets/together/5.jpg" alt="Merlito and Daisa, moment five" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')"><span class="gallery__caption">Family</span></button>
+      <button class="gallery__item reveal-on-scroll" data-index="5"><img src="assets/together/6.jpg" alt="Merlito and Daisa, moment six" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')"><span class="gallery__caption">Together</span></button>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button class="lightbox__close" id="lightbox-close" aria-label="Close photo viewer">&times;</button>
+    <button class="lightbox__nav lightbox__nav--prev" id="lightbox-prev" aria-label="Previous photo">&#10094;</button>
+    <img class="lightbox__image" id="lightbox-image" src="" alt="">
+    <button class="lightbox__nav lightbox__nav--next" id="lightbox-next" aria-label="Next photo">&#10095;</button>
+    <p class="lightbox__caption" id="lightbox-caption"></p>
+  </div>
+
+  <!-- ===== 6. WEDDING PROGRAM ===== -->
+  <section class="section program-section" id="program">
+    <p class="section__eyebrow reveal-on-scroll">Order of the Day</p>
+    <h2 class="section__title reveal-on-scroll">Wedding Program</h2>
+
+    <ol class="program">
+      <li class="program__item reveal-on-scroll"><span class="program__time">2:00 PM</span><span class="program__label">Ceremony</span></li>
+      <li class="program__item reveal-on-scroll"><span class="program__time">3:30 PM</span><span class="program__label">Photo Session</span></li>
+      <li class="program__item reveal-on-scroll"><span class="program__time">5:00 PM</span><span class="program__label">Reception &amp; Guest Arrival</span></li>
+      <li class="program__item reveal-on-scroll"><span class="program__time">6:00 PM</span><span class="program__label">Dinner Service</span></li>
+      <li class="program__item reveal-on-scroll"><span class="program__time">7:15 PM</span><span class="program__label">Cake Cutting</span></li>
+      <li class="program__item reveal-on-scroll"><span class="program__time">7:45 PM</span><span class="program__label">First Dance</span></li>
+      <li class="program__item reveal-on-scroll"><span class="program__time">8:30 PM</span><span class="program__label">Open Floor &amp; Celebration</span></li>
+    </ol>
+  </section>
+
+  <!-- ===== 7. RSVP ===== -->
+  <section class="section rsvp-section" id="rsvp">
+    <p class="section__eyebrow reveal-on-scroll">Kindly Reply</p>
+    <h2 class="section__title reveal-on-scroll">RSVP</h2>
+    <p class="rsvp-intro reveal-on-scroll">We'd be delighted to know if you can join us. Please respond by <strong>15 January 2027</strong>.</p>
+
+    <form id="rsvp-form" class="rsvp-form reveal-on-scroll" novalidate>
+      <div class="field">
+        <label for="rsvp-name">Full Name</label>
+        <input type="text" id="rsvp-name" name="name" autocomplete="name" required minlength="2">
+        <span class="field__error" data-error-for="rsvp-name"></span>
+      </div>
+
+      <div class="field">
+        <label for="rsvp-email">Email</label>
+        <input type="email" id="rsvp-email" name="email" autocomplete="email" required>
+        <span class="field__error" data-error-for="rsvp-email"></span>
+      </div>
+
+      <div class="field">
+        <label for="rsvp-phone">Contact Number</label>
+        <input type="tel" id="rsvp-phone" name="phone" autocomplete="tel" required placeholder="09XX XXX XXXX">
+        <span class="field__error" data-error-for="rsvp-phone"></span>
+      </div>
+
+      <div class="field">
+        <label for="rsvp-guests">Number of Guests</label>
+        <select id="rsvp-guests" name="guests" required>
+          <option value="" disabled selected>Select guest count</option>
+          <option value="1">Just me — 1</option>
+          <option value="2">2 Guests</option>
+          <option value="3">3 Guests</option>
+          <option value="4">4 Guests</option>
+        </select>
+        <span class="field__error" data-error-for="rsvp-guests"></span>
+      </div>
+
+      <fieldset class="field field--attendance">
+        <legend>Will you be attending?</legend>
+        <div class="radio-row">
+          <label class="radio-pill"><input type="radio" name="attendance" value="joyfully-accept" required> Joyfully Accepts</label>
+          <label class="radio-pill"><input type="radio" name="attendance" value="regretfully-decline" required> Regretfully Declines</label>
+        </div>
+        <span class="field__error" data-error-for="rsvp-attendance"></span>
+      </fieldset>
+
+      <div class="field field--full">
+        <label for="rsvp-message">Message for the Couple</label>
+        <textarea id="rsvp-message" name="message" rows="4" maxlength="500" placeholder="Leave a note of love and well-wishes..."></textarea>
+      </div>
+
+      <button type="submit" class="btn btn--primary rsvp-form__submit">
+        <span>Send RSVP</span>
+      </button>
+    </form>
+  </section>
+
+  <!-- RSVP Success Modal -->
+  <div class="modal" id="rsvp-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="rsvp-modal-title">
+    <div class="modal__backdrop" id="rsvp-modal-backdrop"></div>
+    <div class="modal__panel">
+      <div class="modal__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 10a6 6 0 1 1 12 0c0 4-6 10-6 10S6 14 6 10Z"/><path d="M9 10l2 2 4-4"/></svg>
+      </div>
+      <h3 id="rsvp-modal-title">Thank You!</h3>
+      <p id="rsvp-modal-text">Your RSVP has been received with love. We can't wait to celebrate with you.</p>
+      <button class="btn btn--ghost" id="rsvp-modal-close">Close</button>
+    </div>
+  </div>
+
+  <!-- ===== 8. GIFT REGISTRY ===== -->
+  <section class="section registry-section" id="registry">
+    <p class="section__eyebrow reveal-on-scroll">With Gratitude</p>
+    <h2 class="section__title reveal-on-scroll">Gift Registry</h2>
+    <p class="registry-intro reveal-on-scroll">Your presence at our wedding is the greatest gift of all. Should you wish to bless us further as we begin this new chapter, a monetary gift would be received with heartfelt gratitude.</p>
+
+    <div class="registry__grid">
+      <div class="registry-card reveal-on-scroll">
+        <h3>Scan to Send a Gift</h3>
+        <div class="qr-placeholder" aria-hidden="true">
+          <svg viewBox="0 0 100 100" width="120" height="120">
+            <rect width="100" height="100" fill="none"/>
+            <g fill="currentColor">
+              <rect x="4" y="4" width="24" height="24" fill="none" stroke="currentColor" stroke-width="4"/>
+              <rect x="12" y="12" width="8" height="8"/>
+              <rect x="72" y="4" width="24" height="24" fill="none" stroke="currentColor" stroke-width="4"/>
+              <rect x="80" y="12" width="8" height="8"/>
+              <rect x="4" y="72" width="24" height="24" fill="none" stroke="currentColor" stroke-width="4"/>
+              <rect x="12" y="80" width="8" height="8"/>
+              <rect x="40" y="4" width="6" height="6"/><rect x="50" y="10" width="6" height="6"/><rect x="40" y="20" width="6" height="6"/>
+              <rect x="60" y="40" width="6" height="6"/><rect x="40" y="40" width="6" height="6"/><rect x="80" y="50" width="6" height="6"/>
+              <rect x="40" y="60" width="6" height="6"/><rect x="60" y="70" width="6" height="6"/><rect x="70" y="80" width="6" height="6"/>
+              <rect x="50" y="88" width="6" height="6"/><rect x="88" y="70" width="6" height="6"/>
+            </g>
+          </svg>
+        </div>
+        <p class="registry-card__note">QR code placeholder — replace with your GCash / PayMaya QR</p>
+      </div>
+
+      <div class="registry-card reveal-on-scroll">
+        <h3>Bank Transfer</h3>
+        <dl class="bank-details">
+          <div><dt>Bank</dt><dd>[ GoTyme ]</dd></div>
+          <div><dt>Account Name</dt><dd>Merlito Salas Jr.</dd></div>
+          <div><dt>Account Number</dt><dd>[ •••• •••• •••• ]</dd></div>
+        </dl>
+        <p class="registry-card__note">With our deepest thanks for your generosity and love.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 9. GUEST MESSAGES ===== -->
+  <section class="section guestbook-section" id="guestbook">
+    <p class="section__eyebrow reveal-on-scroll">From Our Loved Ones</p>
+    <h2 class="section__title reveal-on-scroll">Guestbook</h2>
+
+    <form id="guestbook-form" class="guestbook-form reveal-on-scroll">
+      <input type="text" id="gb-name" name="gb-name" placeholder="Your name" required maxlength="60">
+      <textarea id="gb-message" name="gb-message" rows="2" placeholder="Leave a wish or blessing..." required maxlength="280"></textarea>
+      <button type="submit" class="btn btn--primary">Leave a Wish</button>
+    </form>
+
+    <div class="guestbook__wall" id="guestbook-wall" aria-live="polite">
+      <!-- seeded + user messages rendered by script.js -->
+    </div>
+  </section>
+
+  <!-- ===== 10. FOOTER ===== -->
+  <footer class="site-footer">
+    <p class="site-footer__monogram">M<span>&amp;</span>D</p>
+    <p class="site-footer__message">We look forward to celebrating our special day with you.</p>
+    <p class="site-footer__names">Merlito &amp; Daisa</p>
+    <div class="site-footer__social" aria-label="Social media">
+      <a href="https://www.facebook.com/serafimcloudmilori/" aria-label="Facebook">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 8.5h2V5h-2a4 4 0 0 0-4 4v2H9v3.5h2V21h3.5v-6.5H17l.5-3.5h-3V9c0-.4.3-1 1.5-1Z"/></svg>
+      </a>
+      <a href="https://www.instagram.com/cloudcephyrus/" aria-label="Instagram">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <!-- <a href="#" aria-label="Messenger">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 11.5C4 6.8 7.8 4 12 4s8 2.8 8 7.5-3.8 7.5-8 7.5c-1 0-2-.15-2.9-.45L5.5 20l.8-3.4C5 15.3 4 13.5 4 11.5Z"/></svg>
+      </a> -->
+    </div>
+    <p class="site-footer__copyright">&copy; <span id="footer-year"></span> Merlito &amp; Daisa. Made with love for our wedding day.</p>
+  </footer>
+
+</main>
+
+<!-- ===== Floating Music Player ===== -->
+<div class="music-player" id="music-player">
+  <button id="music-toggle" class="music-player__toggle" aria-pressed="false" aria-label="Play romantic instrumental music">
+    <svg class="music-player__disc" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></svg>
+  </button>
+  <span class="music-player__label" id="music-label">Play Music</span>
+</div>
+<audio id="bg-audio" loop preload="none">
+  <source src="assets/mp3/Kay Tagal Kitang Hinintay.mp3" type="audio/mpeg">
+</audio>
+
+<script src="js/script.js" defer></script>
+</body>
+</html>

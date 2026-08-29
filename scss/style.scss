@@ -1,0 +1,17 @@
+// Entry point — compile with:
+//   npm run build:css   (sass scss/style.scss css/style.css --style=compressed)
+//
+// The full component styling currently lives directly in css/style.css
+// (authored with CSS custom properties so it needs no build step to ship).
+// This file forwards the SCSS token layer for teams that prefer to author
+// new components in Sass — @use the tokens below and extend css/style.css's
+// conventions (BEM-ish class names, one component per section).
+
+@use "tokens" as t;
+
+:root {
+  --gold: #{t.$gold};
+  --sage: #{t.$sage};
+  --blush: #{t.$blush};
+  --ivory: #{t.$ivory};
+}

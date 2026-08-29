@@ -1,0 +1,25 @@
+// Design tokens — mirrors :root custom properties in css/style.css
+// Compile the SCSS partials in this folder with sass/dart-sass if you'd
+// rather author styles here; css/style.css is the ready-to-ship output.
+
+$ivory:      #FBF7EF;
+$ivory-deep: #F3ECDE;
+$gold:       #C6A15B;
+$gold-light: #E4CFA0;
+$gold-deep:  #9C7A3C;
+$blush:      #E9C9C9;
+$blush-deep: #D9A9AC;
+$sage:       #93A882;
+$sage-deep:  #6F8460;
+$ink:        #33291F;
+$ink-soft:   #6B5F4F;
+
+$font-display: "Cormorant Garamond", serif;
+$font-script:  "Tangerine", cursive;
+$font-eyebrow: "Cinzel", serif;
+
+$radius-sm: 6px;
+$radius-md: 14px;
+$radius-lg: 28px;
+
+$ease: cubic-bezier(.22, .9, .3, 1);
