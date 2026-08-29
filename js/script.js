@@ -345,9 +345,9 @@
     if (!form || !wall) return;
 
     const seed = [
-      { name: "Ate Stephane", message: "Wishing you both a lifetime of love, laughter, and adventure together!" },
-      { name: "Mama Sally", message: "So happy for you two. May your marriage be as beautiful as your love story." },
-      { name: "Ate Trixia June", message: "Congratulations Merlito and Daisa! Can't wait to celebrate with you." },
+      { name: "Tita Elena", message: "Wishing you both a lifetime of love, laughter, and adventure together!" },
+      { name: "Kuya Ramon", message: "So happy for you two. May your marriage be as beautiful as your love story." },
+      { name: "Ate Joy", message: "Congratulations Merlito and Daisa! Can't wait to celebrate with you." },
     ];
 
     function render() {

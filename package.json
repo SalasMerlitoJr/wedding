@@ -5,8 +5,7 @@
   "description": "Wedding invitation website for Merlito Salas Jr. & Daisa Ballozos",
   "scripts": {
     "build:ts": "tsc",
-    "build:css": "sass scss/style.scss css/style.css --style=compressed",
-    "build": "npm run build:ts && npm run build:css",
+    "build:css": "sass scss/style.scss scss/dist/tokens.css --style=compressed",
     "serve": "npx serve ."
   },
   "devDependencies": {
