@@ -66,6 +66,9 @@
       sessionStorage_set("wedding-opened", "1");
       startMusic();
       triggerReveal();
+      // Let other modules (e.g. the particle canvas) know the real page
+      // layout now exists, so they can re-measure.
+      requestAnimationFrame(() => window.dispatchEvent(new Event("invitation:opened")));
     }
 
     function startMusic() {
@@ -419,6 +422,10 @@ function initGallery() {
     item.addEventListener("click", (e) => {
       // Prevent opening lightbox if item was actively being dragged
       if (item.closest('#carousel-ring')?.classList.contains('is-dragging')) return;
+      // In the 3D parallax slider, a click on a non-centered card should
+      // recenter it instead of opening the lightbox (handled by initGallerySlider).
+      const slide = item.closest('.gallery-slider__slide');
+      if (slide && !slide.classList.contains('gallery-slider__slide--active')) return;
       openAt(index);
     });
   });
@@ -622,50 +629,151 @@ function initGallery() {
     });
   }
 
-  /* ---------- Ambient sprig particles on canvas ---------- */
+  /* ---------- Ambient NASA-style deep-space particle field ---------- */
   function initSprigCanvas() {
     const canvas = document.getElementById("sprig-canvas");
-    if (!canvas || !(canvas instanceof HTMLCanvasElement)) return;
+    if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
+      console.warn("[sprig-canvas] #sprig-canvas element not found in the DOM — check index.html.");
+      return;
+    }
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!ctx) {
+      console.warn("[sprig-canvas] 2D context unavailable.");
+      return;
+    }
 
-    let particles = [];
     let width = 0, height = 0;
+    let stars = [];       // three parallax layers of drifting/twinkling stars
+    let shooters = [];    // occasional shooting stars
+    let mx = 0, my = 0;   // mouse, for a very light parallax drift
     const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    const PALETTE = ["255,255,255", "228,207,160", "198,161,91", "180,200,170"];
+
+    // Layer definitions: far stars are small/dim/slow, near stars are bigger/brighter/faster.
+    const LAYERS = [
+      { count: 70, rMin: 0.5, rMax: 1.1, speed: 0.02, alphaMax: 0.55, parallax: 0.15 },
+      { count: 45, rMin: 0.9, rMax: 1.8, speed: 0.05, alphaMax: 0.75, parallax: 0.35 },
+      { count: 22, rMin: 1.4, rMax: 2.6, speed: 0.09, alphaMax: 0.95, parallax: 0.6 },
+    ];
+    const LINK_DIST = 110;
+    const LINK_DIST_SQ = LINK_DIST * LINK_DIST;
+
+    // The canvas is position:fixed and always exactly one viewport in size —
+    // the drawing buffer must match that 1:1, or the browser scales a
+    // mismatched bitmap into the fixed box and everything looks squashed/empty.
     function resize() {
       width = canvas.width = window.innerWidth;
-      height = canvas.height = document.documentElement.scrollHeight;
-      const count = Math.min(60, Math.floor((width * height) / 90000));
-      particles = Array.from({ length: count }, () => makeParticle());
+      height = canvas.height = window.innerHeight;
+      stars = [];
+      LAYERS.forEach((layer, layerIndex) => {
+        for (let i = 0; i < layer.count; i++) stars.push(makeStar(layer, layerIndex));
+      });
     }
-    function makeParticle() {
+    function makeStar(layer, layerIndex) {
       return {
+        layer: layerIndex,
         x: Math.random() * width,
         y: Math.random() * height,
-        r: 1 + Math.random() * 2.2,
-        speed: 0.15 + Math.random() * 0.35,
-        drift: (Math.random() - 0.5) * 0.3,
-        hue: Math.random() > 0.5 ? "198,161,91" : "147,168,130",
-        alpha: 0.15 + Math.random() * 0.25,
+        r: layer.rMin + Math.random() * (layer.rMax - layer.rMin),
+        vy: -(layer.speed * (0.6 + Math.random() * 0.8)),
+        vx: (Math.random() - 0.5) * layer.speed * 0.4,
+        hue: PALETTE[Math.floor(Math.random() * PALETTE.length)],
+        alphaMax: layer.alphaMax * (0.6 + Math.random() * 0.4),
+        twinkle: Math.random() * Math.PI * 2,
+        twinkleSpeed: 0.015 + Math.random() * 0.03,
+        parallax: layer.parallax,
       };
+    }
+    function maybeSpawnShooter() {
+      if (reduceMotion) return;
+      if (Math.random() < 0.006 && shooters.length < 2) {
+        const startX = Math.random() * width * 0.7;
+        const startY = Math.random() * height * 0.4;
+        const angle = (Math.PI / 4) + (Math.random() - 0.5) * 0.3; // ~45°, slight variance
+        const speed = 9 + Math.random() * 6;
+        shooters.push({
+          x: startX, y: startY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          len: 70 + Math.random() * 60,
+        });
+      }
+    }
+    function step() {
+      stars.forEach((s) => {
+        s.x += s.vx + mx * s.parallax * 0.02;
+        s.y += s.vy + my * s.parallax * 0.02;
+        s.twinkle += s.twinkleSpeed;
+        if (s.y < -10) { s.y = height + 10; s.x = Math.random() * width; }
+        if (s.y > height + 10) { s.y = -10; s.x = Math.random() * width; }
+        if (s.x < -10) s.x = width + 10;
+        if (s.x > width + 10) s.x = -10;
+      });
+      maybeSpawnShooter();
+      shooters.forEach((sh) => {
+        sh.x += sh.vx; sh.y += sh.vy; sh.life -= 0.02;
+      });
+      shooters = shooters.filter((sh) => sh.life > 0 && sh.x < width + 100 && sh.y < height + 100);
     }
     function draw() {
       ctx.clearRect(0, 0, width, height);
-      particles.forEach((p) => {
+
+      // faint constellation links between the nearest, brightest layer only
+      const near = stars.filter((s) => s.layer === 2);
+      for (let i = 0; i < near.length; i++) {
+        for (let j = i + 1; j < near.length; j++) {
+          const a = near[i], b = near[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < LINK_DIST_SQ) {
+            const t = 1 - Math.sqrt(distSq) / LINK_DIST;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(228,207,160,${t * 0.2})`;
+            ctx.lineWidth = 0.6;
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // stars, dimmer/smaller layers first so nearer ones sit visually on top
+      stars.forEach((s) => {
+        const a = s.alphaMax * (0.55 + 0.45 * Math.sin(s.twinkle));
         ctx.beginPath();
-        ctx.fillStyle = `rgba(${p.hue},${p.alpha})`;
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${s.hue},${a})`;
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
         ctx.fill();
-        p.y -= p.speed;
-        p.x += p.drift;
-        if (p.y < -10) { p.y = height + 10; p.x = Math.random() * width; }
       });
+
+      // shooting stars
+      shooters.forEach((sh) => {
+        const tailX = sh.x - sh.vx * (sh.len / 12);
+        const tailY = sh.y - sh.vy * (sh.len / 12);
+        const grad = ctx.createLinearGradient(sh.x, sh.y, tailX, tailY);
+        grad.addColorStop(0, `rgba(255,250,235,${sh.life})`);
+        grad.addColorStop(1, "rgba(255,250,235,0)");
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(sh.x, sh.y);
+        ctx.lineTo(tailX, tailY);
+        ctx.stroke();
+      });
+
+      step();
       if (!reduceMotion) requestAnimationFrame(draw);
     }
 
     resize();
+    console.info(`[sprig-canvas] deep-space field ready — ${width}x${height}px (viewport-locked), ${stars.length} stars.`);
     window.addEventListener("resize", debounce(resize, 250));
+    window.addEventListener("mousemove", (e) => {
+      mx = (e.clientX - width / 2);
+      my = (e.clientY - height / 2);
+    }, { passive: true });
     draw();
   }
 
@@ -675,6 +783,183 @@ function initGallery() {
       clearTimeout(t);
       t = setTimeout(() => fn.apply(this, args), wait);
     };
+  }
+
+  /* ---------- Entourage: Expand/Collapse Figure-Cut Cards ---------- */
+  function initExpandCards() {
+    const cards = document.querySelectorAll("[data-expand-card]");
+    cards.forEach((card) => {
+      const toggle = card.querySelector("[data-expand-toggle]");
+      if (!toggle) return;
+      toggle.addEventListener("click", () => {
+        const isOpen = card.getAttribute("data-open") === "true";
+        card.setAttribute("data-open", isOpen ? "false" : "true");
+        toggle.setAttribute("aria-expanded", isOpen ? "false" : "true");
+      });
+    });
+  }
+
+  /* ---------- Photo Gallery: 3D Parallax Coverflow + Tilt/Glow Cards ---------- */
+  function initGallerySlider() {
+    const wrapper = document.getElementById("gallery-slider");
+    const track = document.getElementById("gallery-track");
+    const dataEl = document.getElementById("gallery-data");
+    const template = document.getElementById("gallery-slide-template");
+    const prevBtn = document.getElementById("gallery-prev");
+    const nextBtn = document.getElementById("gallery-next");
+    const dotsWrap = document.getElementById("gallery-dots");
+    if (!wrapper || !track || !dataEl || !template) return;
+
+    let photos = [];
+    try { photos = JSON.parse(dataEl.textContent); } catch (e) { photos = []; }
+    if (!photos.length) return;
+
+    const slides = photos.map((photo, i) => {
+      const node = template.content.firstElementChild.cloneNode(true);
+      const btn = node.querySelector(".gallery__item");
+      const img = node.querySelector("img");
+      btn.dataset.index = String(i);
+      img.src = photo.src;
+      img.alt = photo.alt || "";
+      track.appendChild(node);
+      return node;
+    });
+
+    const dots = photos.map((_, i) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "gallery-slider__dot";
+      dot.setAttribute("role", "tab");
+      dot.setAttribute("aria-label", `Go to photo ${i + 1}`);
+      dot.addEventListener("click", () => { setCenter(i); restartAutoplay(); });
+      dotsWrap?.appendChild(dot);
+      return dot;
+    });
+
+    const count = slides.length;
+    let center = 0;
+    let autoplayTimer = null;
+
+    function isMobile() { return window.matchMedia("(max-width: 720px)").matches; }
+
+    function shortestOffset(index) {
+      let diff = index - center;
+      if (diff > count / 2) diff -= count;
+      if (diff < -count / 2) diff += count;
+      return diff;
+    }
+
+    function layout() {
+      const stepX = isMobile() ? 118 : 190;
+      const stepZ = isMobile() ? 90 : 150;
+      const rotate = 30;
+      const maxVisible = 3;
+
+      slides.forEach((slide, i) => {
+        const offset = shortestOffset(i);
+        const abs = Math.abs(offset);
+        slide.classList.toggle("gallery-slider__slide--active", offset === 0);
+
+        if (abs > maxVisible) {
+          slide.style.opacity = "0";
+          slide.style.pointerEvents = "none";
+          slide.style.transform = `translateX(${offset * stepX}px) translateZ(${-abs * stepZ}px)`;
+          slide.style.zIndex = String(count - abs);
+          return;
+        }
+
+        const tx = offset * stepX;
+        const tz = -abs * stepZ;
+        const ry = offset * -rotate;
+        const scale = 1 - abs * 0.08;
+        slide.style.transform = `translateX(${tx}px) translateZ(${tz}px) rotateY(${ry}deg) scale(${scale})`;
+        slide.style.opacity = String(1 - abs * 0.28);
+        slide.style.filter = abs === 0 ? "none" : `blur(${abs * 0.6}px) brightness(${1 - abs * 0.12})`;
+        slide.style.zIndex = String(count - abs);
+        slide.style.pointerEvents = "auto";
+      });
+
+      dots.forEach((dot, i) => dot.classList.toggle("is-active", i === center));
+    }
+
+    function setCenter(index) {
+      center = ((index % count) + count) % count;
+      layout();
+    }
+
+    function startAutoplay() {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      stopAutoplay();
+      autoplayTimer = setInterval(() => setCenter(center + 1), 4200);
+    }
+    function stopAutoplay() { if (autoplayTimer) clearInterval(autoplayTimer); autoplayTimer = null; }
+    function restartAutoplay() { stopAutoplay(); startAutoplay(); }
+
+    prevBtn?.addEventListener("click", () => { setCenter(center - 1); restartAutoplay(); });
+    nextBtn?.addEventListener("click", () => { setCenter(center + 1); restartAutoplay(); });
+
+    // Click a side card to bring it to center
+    slides.forEach((slide, i) => {
+      slide.addEventListener("click", (e) => {
+        if (!slide.classList.contains("gallery-slider__slide--active")) {
+          e.preventDefault();
+          e.stopPropagation();
+          setCenter(i);
+          restartAutoplay();
+        }
+      }, true);
+    });
+
+    // Drag / swipe to navigate
+    let dragging = false, startX = 0, moved = false;
+    const viewport = wrapper.querySelector(".gallery-slider__viewport");
+    viewport?.addEventListener("pointerdown", (e) => {
+      dragging = true; moved = false; startX = e.clientX;
+      stopAutoplay();
+    });
+    window.addEventListener("pointermove", (e) => {
+      if (!dragging) return;
+      if (Math.abs(e.clientX - startX) > 6) moved = true;
+    });
+    window.addEventListener("pointerup", (e) => {
+      if (!dragging) return;
+      dragging = false;
+      if (moved) {
+        const delta = e.clientX - startX;
+        if (delta < -40) setCenter(center + 1);
+        else if (delta > 40) setCenter(center - 1);
+      }
+      restartAutoplay();
+    });
+
+    // 3D tilt + cursor-follow glow on the active card
+    slides.forEach((slide) => {
+      const card = slide.querySelector(".tilt-card");
+      if (!card) return;
+      card.addEventListener("pointermove", (e) => {
+        if (!slide.classList.contains("gallery-slider__slide--active")) return;
+        const rect = card.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width;
+        const py = (e.clientY - rect.top) / rect.height;
+        const rx = (0.5 - py) * 14;
+        const ry = (px - 0.5) * 16;
+        card.style.setProperty("--rx", `${rx}deg`);
+        card.style.setProperty("--ry", `${ry}deg`);
+        card.style.setProperty("--gx", `${px * 100}%`);
+        card.style.setProperty("--gy", `${py * 100}%`);
+      });
+      card.addEventListener("pointerleave", () => {
+        card.style.setProperty("--rx", "0deg");
+        card.style.setProperty("--ry", "0deg");
+      });
+    });
+
+    wrapper.addEventListener("mouseenter", stopAutoplay);
+    wrapper.addEventListener("mouseleave", startAutoplay);
+    window.addEventListener("resize", debounce(layout, 150));
+
+    layout();
+    startAutoplay();
   }
 
   /* ---------- Footer year ---------- */
@@ -693,8 +978,10 @@ function initGallery() {
     initScrollReveal();
     initCountdown();
     initMapLink();
-    // initRadialCarousel(); // replaced with static photo-grid gallery
+    // initRadialCarousel(); // replaced with 3D parallax gallery slider
+    initGallerySlider();
     initGallery();
+    initExpandCards();
     initRSVP();
     initGuestbook();
     initMusicPlayer();

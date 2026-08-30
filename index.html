@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500;600&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=5">
 </head>
 <body>
 
@@ -102,7 +102,7 @@
       </article>
 
       <div class="couple__center reveal-on-scroll" aria-hidden="true">
-        <span class="couple__monogram">&</span>
+        <span class="couple__monogram"></span>
       </div>
 
       <article class="couple-card reveal-on-scroll">
@@ -212,68 +212,46 @@
     <h2 class="section__title reveal-on-scroll">Photo Gallery</h2>
     <!-- <p class="gallery-intro reveal-on-scroll">Drag, scroll, or use the arrows to spin through our favorite moments together.</p> -->
 
-    <div class="photo-grid reveal-on-scroll" id="photo-grid">
-      <button type="button" class="gallery__item photo-grid__item" data-index="0">
-        <img class="photo-grid__img--base" src="assets/together/1.jpg" alt="Merlito and Daisa, moment one" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
-        <img class="photo-grid__img--alt" src="assets/together/1.jpg" alt="" aria-hidden="true" loading="lazy">
-        <!-- <span class="gallery__caption">The Proposal</span> -->
+    <div class="gallery-slider reveal-on-scroll" id="gallery-slider">
+      <div class="gallery-slider__viewport">
+        <ul class="gallery-slider__track" id="gallery-track">
+          <!-- slides rendered/positioned by script.js; markup below defines the 12 photos -->
+        </ul>
+      </div>
+      <button type="button" class="gallery-slider__nav gallery-slider__nav--prev" id="gallery-prev" aria-label="Previous photo">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg>
       </button>
-      <button type="button" class="gallery__item photo-grid__item" data-index="1">
-        <img class="photo-grid__img--base" src="assets/together/2.jpg" alt="Merlito and Daisa, moment two" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
-        <img class="photo-grid__img--alt" src="assets/together/2.jpg" alt="" aria-hidden="true" loading="lazy">
-        <!-- <span class="gallery__caption">Prenup Session</span> -->
+      <button type="button" class="gallery-slider__nav gallery-slider__nav--next" id="gallery-next" aria-label="Next photo">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg>
       </button>
-      <button type="button" class="gallery__item photo-grid__item" data-index="2">
-        <img class="photo-grid__img--base" src="assets/together/3.jpg" alt="Merlito and Daisa, moment three" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
-        <img class="photo-grid__img--alt" src="assets/together/3.jpg" alt="" aria-hidden="true" loading="lazy">
-        <!-- <span class="gallery__caption">By the Garden</span> -->
-      </button>
-      <button type="button" class="gallery__item photo-grid__item" data-index="3">
-        <img class="photo-grid__img--base" src="assets/together/4.jpg" alt="Merlito and Daisa, moment four" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
-        <img class="photo-grid__img--alt" src="assets/together/4.jpg" alt="" aria-hidden="true" loading="lazy">
-        <!-- <span class="gallery__caption">Golden Hour</span> -->
-      </button>
-      <button type="button" class="gallery__item photo-grid__item" data-index="4">
-        <img class="photo-grid__img--base" src="assets/together/5.jpg" alt="Merlito and Daisa, moment five" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
-        <img class="photo-grid__img--alt" src="assets/together/5.jpg" alt="" aria-hidden="true" loading="lazy">
-        <!-- <span class="gallery__caption">Family</span> -->
-      </button>
-      <button type="button" class="gallery__item photo-grid__item" data-index="5">
-        <img class="photo-grid__img--base" src="assets/together/6.jpg" alt="Merlito and Daisa, moment six" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
-        <img class="photo-grid__img--alt" src="assets/together/6.jpg" alt="" aria-hidden="true" loading="lazy">
-        <!-- <span class="gallery__caption">Together</span> -->
-      </button>
-      <button type="button" class="gallery__item photo-grid__item" data-index="6">
-        <img class="photo-grid__img--base" src="assets/together/7.jpg" alt="Merlito and Daisa, moment seven" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
-        <img class="photo-grid__img--alt" src="assets/together/7.jpg" alt="" aria-hidden="true" loading="lazy">
-        <!-- <span class="gallery__caption">Golden Hour</span> -->
-      </button>
-      <button type="button" class="gallery__item photo-grid__item" data-index="7">
-        <img class="photo-grid__img--base" src="assets/together/8.jpg" alt="Merlito and Daisa, moment eight" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
-        <img class="photo-grid__img--alt" src="assets/together/8.jpg" alt="" aria-hidden="true" loading="lazy">
-        <!-- <span class="gallery__caption">Family</span> -->
-      </button>
-      <button type="button" class="gallery__item photo-grid__item" data-index="8">
-        <img class="photo-grid__img--base" src="assets/together/9.jpg" alt="Merlito and Daisa, moment nine" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
-        <img class="photo-grid__img--alt" src="assets/together/9.jpg" alt="" aria-hidden="true" loading="lazy">
-        <!-- <span class="gallery__caption">Together</span> -->
-      </button>
-      <button type="button" class="gallery__item photo-grid__item" data-index="9">
-        <img class="photo-grid__img--base" src="assets/together/10.jpg" alt="Merlito and Daisa, moment ten" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
-        <img class="photo-grid__img--alt" src="assets/together/10.jpg" alt="" aria-hidden="true" loading="lazy">
-        <!-- <span class="gallery__caption">Golden Hour</span> -->
-      </button>
-      <button type="button" class="gallery__item photo-grid__item" data-index="10">
-        <img class="photo-grid__img--base" src="assets/together/11.jpg" alt="Merlito and Daisa, moment eleven" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
-        <img class="photo-grid__img--alt" src="assets/together/11.jpg" alt="" aria-hidden="true" loading="lazy">
-        <!-- <span class="gallery__caption">Family</span> -->
-      </button>
-      <button type="button" class="gallery__item photo-grid__item" data-index="11">
-        <img class="photo-grid__img--base" src="assets/together/12.jpg" alt="Merlito and Daisa, moment twelve" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
-        <img class="photo-grid__img--alt" src="assets/together/12.jpg" alt="" aria-hidden="true" loading="lazy">
-        <!-- <span class="gallery__caption">Together</span> -->
-      </button>
+      <div class="gallery-slider__dots" id="gallery-dots" role="tablist" aria-label="Gallery photo selector"></div>
     </div>
+
+    <template id="gallery-slide-template">
+      <li class="gallery-slider__slide">
+        <button type="button" class="gallery__item gallery-slider__card tilt-card" data-index="">
+          <span class="tilt-card__glow" aria-hidden="true"></span>
+          <img class="gallery-slider__img" src="" alt="" loading="lazy" onerror="this.closest('.gallery__item').classList.add('is-placeholder')">
+        </button>
+      </li>
+    </template>
+
+    <script type="application/json" id="gallery-data">
+      [
+        {"src":"assets/together/1.jpg","alt":"Merlito and Daisa, moment one"},
+        {"src":"assets/together/2.jpg","alt":"Merlito and Daisa, moment two"},
+        {"src":"assets/together/3.jpg","alt":"Merlito and Daisa, moment three"},
+        {"src":"assets/together/4.jpg","alt":"Merlito and Daisa, moment four"},
+        {"src":"assets/together/5.jpg","alt":"Merlito and Daisa, moment five"},
+        {"src":"assets/together/6.jpg","alt":"Merlito and Daisa, moment six"},
+        {"src":"assets/together/7.jpg","alt":"Merlito and Daisa, moment seven"},
+        {"src":"assets/together/8.jpg","alt":"Merlito and Daisa, moment eight"},
+        {"src":"assets/together/9.jpg","alt":"Merlito and Daisa, moment nine"},
+        {"src":"assets/together/10.jpg","alt":"Merlito and Daisa, moment ten"},
+        {"src":"assets/together/11.jpg","alt":"Merlito and Daisa, moment eleven"},
+        {"src":"assets/together/12.jpg","alt":"Merlito and Daisa, moment twelve"}
+      ]
+    </script>
   </section>
 
   <!-- Lightbox -->
@@ -328,112 +306,190 @@
       </div>
     </div>
 
-    <!-- Principal Sponsors -->
+    <!-- Entourage — Expand/Collapse Figure-Cut Cards -->
     <div class="entourage__block">
       <h3 class="entourage__subtitle reveal-on-scroll">Principal Sponsors</h3>
-      <div class="sponsors__grid">
-        <div class="sponsors-card reveal-on-scroll">
-          <p class="sponsors-card__label">Principal Sponsors <span>(Ladies)</span></p>
-          <ul class="sponsors-list">
-            <li>Vice President Sara Z. Duterte</li>
-            <li>Sen. Pia Cayetano</li>
-            <li>Sen. Imee Marcos</li>
-            <li>Sen. Camille Villar</li>
-            <li>Dr. Ina Grace Chiu</li>
-            <li>Ms. Mary Joy S. Bloeme</li>
-            <li>Ms. Marites Betanga</li>
-            <!-- <li>Ms.  </li> -->
-          </ul>
+      <div class="expand-cards" id="entourage-cards-principal">
+
+        <!-- Principal Sponsors (Ladies) -->
+        <div class="expand-card reveal-on-scroll" data-expand-card>
+          <button type="button" class="expand-card__head" data-expand-toggle aria-expanded="false" aria-controls="ec-principal-ladies">
+            <span class="expand-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l2.6 5.9 6.4.6-4.8 4.3 1.4 6.2L12 16.9l-5.6 3.1 1.4-6.2-4.8-4.3 6.4-.6L12 3Z"/></svg></span>
+            <span class="expand-card__heading">
+              <span class="expand-card__title">Principal Sponsors <em>(Ladies)</em></span>
+              <span class="expand-card__count">7 Sponsors</span>
+            </span>
+            <span class="expand-card__chevron" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            <!-- <span class="expand-card__cut" aria-hidden="true">Vice President Sara Z. Duterte · Sen. Pia Cayetano · Sen. Imee Marcos · Sen. Camille Villar · and more</span> -->
+          </button>
+          <div class="expand-card__panel" id="ec-principal-ladies">
+            <div class="expand-card__panel-inner">
+              <ul class="secondary-card__list">
+                <li>Vice President Sara Z. Duterte</li>
+                <li>Sen. Pia Cayetano</li>
+                <li>Sen. Imee Marcos</li>
+                <li>Sen. Camille Villar</li>
+                <li>Dr. Ina Grace Chiu</li>
+                <li>Ms. Mary Joy S. Bloeme</li>
+                <li>Ms. Marites Betanga</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="sponsors-card reveal-on-scroll">
-          <p class="sponsors-card__label">Principal Sponsors <span>(Gentlemen)</span></p>
-          <ul class="sponsors-list">
-            <li>Hon. Rodrigo R. Duterte</li>
-            <li>Sen. Christopher Lawrence Go</li>
-            <li>Sen. Alan Peter Cayetano</li>
-            <li>Sen. Rodante Marcoleta</li>
-            <li>Sen. Robin Padilla</li>
-            <li>Sen. Mark Villar</li>
-            <li>Mr. Jesus Betonio</li>
-            <!-- <li>Sponsor 8</li> -->
-          </ul>
+
+        <!-- Principal Sponsors (Gentlemen) -->
+        <div class="expand-card reveal-on-scroll" data-expand-card>
+          <button type="button" class="expand-card__head" data-expand-toggle aria-expanded="false" aria-controls="ec-principal-gentlemen">
+            <span class="expand-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l2.6 5.9 6.4.6-4.8 4.3 1.4 6.2L12 16.9l-5.6 3.1 1.4-6.2-4.8-4.3 6.4-.6L12 3Z"/></svg></span>
+            <span class="expand-card__heading">
+              <span class="expand-card__title">Principal Sponsors <em>(Gentlemen)</em></span>
+              <span class="expand-card__count">7 Sponsors</span>
+            </span>
+            <span class="expand-card__chevron" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            <!-- <span class="expand-card__cut" aria-hidden="true">Hon. Rodrigo R. Duterte · Sen. Christopher Lawrence Go · Sen. Alan Peter Cayetano · and more</span> -->
+          </button>
+          <div class="expand-card__panel" id="ec-principal-gentlemen">
+            <div class="expand-card__panel-inner">
+              <ul class="secondary-card__list">
+                <li>Hon. Rodrigo R. Duterte</li>
+                <li>Sen. Christopher Lawrence Go</li>
+                <li>Sen. Alan Peter Cayetano</li>
+                <li>Sen. Rodante Marcoleta</li>
+                <li>Sen. Robin Padilla</li>
+                <li>Sen. Mark Villar</li>
+                <li>Mr. Jesus Betonio</li>
+              </ul>
+            </div>
+          </div>
         </div>
+        <!-- Bridesmaids -->
+        <div class="expand-card reveal-on-scroll" data-expand-card>
+          <button type="button" class="expand-card__head" data-expand-toggle aria-expanded="false" aria-controls="ec-bridesmaids">
+            <span class="expand-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20s-7-4.35-9.5-8.8C.8 7.8 3 4.5 6.4 4.5c2 0 3.4 1.1 4.1 2.4.7-1.3 2.1-2.4 4.1-2.4 3.4 0 5.6 3.3 3.9 6.7C19 15.65 12 20 12 20Z"/></svg></span>
+            <span class="expand-card__heading">
+              <span class="expand-card__title">Bridesmaids</span>
+              <span class="expand-card__count">8 Ladies</span>
+            </span>
+            <span class="expand-card__chevron" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            <!-- <span class="expand-card__cut" aria-hidden="true">Louisse Lyra Glaire Agsalog · Tiffany Lorraine Salas · Shea Thonitte Ada · Niña Jhean Ada · and more</span> -->
+          </button>
+          <div class="expand-card__panel" id="ec-bridesmaids">
+            <div class="expand-card__panel-inner">
+              <!-- <p class="expand-card__eyebrow">Bride's Entourage</p> -->
+              <ol class="entourage-people">
+                <li>Louisse Lyra Glaire Agsalog</li>
+                <li>Tiffany Lorraine Salas</li>
+                <li>Shea Thonitte Ada</li>
+                <li>Niña Jhean Ada</li>
+                <li>Alexandra Glaire Salas</li>
+                <li>Asley Kate Doong</li>
+                <li>Dexy May Perocho</li>
+                <li>Sheila May Tagaylo</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <!-- Groomsmen -->
+        <div class="expand-card reveal-on-scroll" data-expand-card>
+          <button type="button" class="expand-card__head" data-expand-toggle aria-expanded="false" aria-controls="ec-groomsmen">
+            <span class="expand-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3.2"/><path d="M5 21c1-4.5 4-6.5 7-6.5s6 2 7 6.5"/></svg></span>
+            <span class="expand-card__heading">
+              <span class="expand-card__title">Groomsmen</span>
+              <span class="expand-card__count">8 Gentlemen</span>
+            </span>
+            <span class="expand-card__chevron" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            <!-- <span class="expand-card__cut" aria-hidden="true">Dennis Ballozos · Noel Angelou Echem · Roderick Agol · Linin Chi Bagani Acao · and more</span> -->
+          </button>
+          <div class="expand-card__panel" id="ec-groomsmen">
+            <div class="expand-card__panel-inner">
+              <!-- <p class="expand-card__eyebrow">Groom's Entourage</p> -->
+              <ol class="entourage-people">
+                <li>Dennis Ballozos</li>
+                <li>Noel Angelou Echem</li>
+                <li>Roderick Agol</li>
+                <li>Linin Chi Bagani Acao</li>
+                <li>Jules Buray</li>
+                <li>Gabriel Anton Bancale</li>
+                <li>Jay Ivan Jumarito</li>
+                <li>John Edison Patiño</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        
+
       </div>
     </div>
 
-    <!-- Groom's & Bride's Entourage -->
-    <div class="entourage__block">
-      <div class="entourage__grid">
-        <article class="entourage-card reveal-on-scroll">
-          <p class="entourage-card__eyebrow">Groom's Entourage</p>
-          <h3 class="entourage-card__title">Groomsmen</h3>
-          <ol class="entourage-people">
-            <li><span class="entourage-people__avatar" aria-hidden="true">1</span>Dennis Ballozos</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">2</span>Noel Angelou Echem</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">3</span>Roderick Agol</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">4</span>Linin Chi Bagani Acao</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">5</span>Jules Buray</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">6</span>Gabriel Anton Bancale</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">7</span>Jay Ivan Jumarito</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">8</span>John Edison Patiño</li>
-            <!-- <li><span class="entourage-people__avatar" aria-hidden="true">9</span></li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">10</span>Name Surname</li> -->
-          </ol>
-        </article>
-
-        <article class="entourage-card reveal-on-scroll">
-          <p class="entourage-card__eyebrow">Bride's Entourage</p>
-          <h3 class="entourage-card__title">Bridesmaids</h3>
-          <ol class="entourage-people">
-            <li><span class="entourage-people__avatar" aria-hidden="true">1</span>Louisse Lyra Glaire Agsalog</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">2</span>Tiffany Lorraine Salas</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">3</span>Shea Thonitte Ada</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">4</span>Niña Jhean Ada</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">5</span>Alexandra Glaire Salas</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">6</span>Asley Kate Doong</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">7</span>Dexy May Perocho</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">8</span>Sheila May Tagaylo</li>
-            <!-- <li><span class="entourage-people__avatar" aria-hidden="true">9</span>Rheand Rose Galdo</li>
-            <li><span class="entourage-people__avatar" aria-hidden="true">10</span>Aaliyah Pacudan</li> -->
-          </ol>
-        </article>
-      </div>
-    </div>
-
-    <!-- Secondary Sponsors -->
     <div class="entourage__block">
       <h3 class="entourage__subtitle reveal-on-scroll">Secondary Sponsors</h3>
-      <div class="secondary__grid">
-        <div class="secondary-card reveal-on-scroll">
-          <span class="secondary-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3c1.4 2 2 3.6 2 5a2 2 0 1 1-4 0c0-1.4.6-3 2-5Z"/><path d="M9 21h6M12 12v9"/></svg>
-          </span>
-          <p class="secondary-card__title">Candle Sponsors</p>
-          <ul class="secondary-card__list">
-            <li>Hon. Baste Duterte</li>
-            <li>Hon. Kitty Duterte</li>
-          </ul>
+      <div class="expand-cards expand-cards--row3" id="entourage-cards-secondary">
+ 
+        <!-- Candle Sponsors -->
+        <div class="expand-card reveal-on-scroll" data-expand-card>
+          <button type="button" class="expand-card__head" data-expand-toggle aria-expanded="false" aria-controls="ec-candle">
+            <span class="expand-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3c1.4 2 2 3.6 2 5a2 2 0 1 1-4 0c0-1.4.6-3 2-5Z"/><path d="M9 21h6M12 12v9"/></svg></span>
+            <span class="expand-card__heading">
+              <span class="expand-card__title">Candle Sponsors</span>
+              <span class="expand-card__count">2 Sponsors</span>
+            </span>
+            <span class="expand-card__chevron" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            <!-- <span class="expand-card__cut" aria-hidden="true">Hon. Baste Duterte · Hon. Kitty Duterte</span> -->
+          </button>
+          <div class="expand-card__panel" id="ec-candle">
+            <div class="expand-card__panel-inner">
+              <ul class="secondary-card__list">
+                <li>Hon. Baste Duterte</li>
+                <li>Hon. Kitty Duterte</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="secondary-card reveal-on-scroll">
-          <span class="secondary-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6c4 3 12 3 16 0M4 6v9c4 3 12 3 16 0V6"/></svg>
-          </span>
-          <p class="secondary-card__title">Veil Sponsors</p>
-          <ul class="secondary-card__list">
-            <li>Hon. Dante Pajo</li>
-            <li>Hon. Maria Clara Pajo</li>
-          </ul>
+ 
+        <!-- Veil Sponsors -->
+        <div class="expand-card reveal-on-scroll" data-expand-card>
+          <button type="button" class="expand-card__head" data-expand-toggle aria-expanded="false" aria-controls="ec-veil">
+            <span class="expand-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6c4 3 12 3 16 0M4 6v9c4 3 12 3 16 0V6"/></svg></span>
+            <span class="expand-card__heading">
+              <span class="expand-card__title">Veil Sponsors</span>
+              <span class="expand-card__count">2 Sponsors</span>
+            </span>
+            <span class="expand-card__chevron" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            <!-- <span class="expand-card__cut" aria-hidden="true">Hon. Dante Pajo · Hon. Maria Clara Pajo</span> -->
+          </button>
+          <div class="expand-card__panel" id="ec-veil">
+            <div class="expand-card__panel-inner">
+              <ul class="secondary-card__list">
+                <li>Hon. Dante Pajo</li>
+                <li>Hon. Maria Clara Pajo</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="secondary-card reveal-on-scroll">
-          <span class="secondary-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8c3 3 6-3 8 0s5 3 8 0M4 16c3 3 6-3 8 0s5 3 8 0"/></svg>
-          </span>
-          <p class="secondary-card__title">Cord Sponsors</p>
-          <ul class="secondary-card__list">
-            <li>Hon. Sebastian Salas</li>
-            <li>Hon. Sabrina Ballozos</li>
-          </ul>
+ 
+        <!-- Cord Sponsors -->
+        <div class="expand-card reveal-on-scroll" data-expand-card>
+          <button type="button" class="expand-card__head" data-expand-toggle aria-expanded="false" aria-controls="ec-cord">
+            <span class="expand-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8c3 3 6-3 8 0s5 3 8 0M4 16c3 3 6-3 8 0s5 3 8 0"/></svg></span>
+            <span class="expand-card__heading">
+              <span class="expand-card__title">Cord Sponsors</span>
+              <span class="expand-card__count">2 Sponsors</span>
+            </span>
+            <span class="expand-card__chevron" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            <!-- <span class="expand-card__cut" aria-hidden="true">Hon. Sebastian Salas · Hon. Sabrina Ballozos</span> -->
+          </button>
+          <div class="expand-card__panel" id="ec-cord">
+            <div class="expand-card__panel-inner">
+              <ul class="secondary-card__list">
+                <li>Hon. Sebastian Salas</li>
+                <li>Hon. Sabrina Ballozos</li>
+              </ul>
+            </div>
+          </div>
         </div>
+ 
       </div>
     </div>
   </section>
@@ -581,6 +637,6 @@
   <source src="assets/mp3/Kay Tagal Kitang Hinintay.mp3" type="audio/mpeg">
 </audio>
 
-<script src="js/script.js" defer></script>
+<script src="js/script.js?v=5" defer></script>
 </body>
 </html>
