@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500;600&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=5">
+<link rel="stylesheet" href="css/style.css?v=7">
 </head>
 <body>
 
@@ -215,16 +215,9 @@
     <div class="gallery-slider reveal-on-scroll" id="gallery-slider">
       <div class="gallery-slider__viewport">
         <ul class="gallery-slider__track" id="gallery-track">
-          <!-- slides rendered/positioned by script.js; markup below defines the 12 photos -->
+          <!-- slides rendered by script.js as a duplicated, seamless marquee loop -->
         </ul>
       </div>
-      <button type="button" class="gallery-slider__nav gallery-slider__nav--prev" id="gallery-prev" aria-label="Previous photo">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg>
-      </button>
-      <button type="button" class="gallery-slider__nav gallery-slider__nav--next" id="gallery-next" aria-label="Next photo">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg>
-      </button>
-      <div class="gallery-slider__dots" id="gallery-dots" role="tablist" aria-label="Gallery photo selector"></div>
     </div>
 
     <template id="gallery-slide-template">
@@ -295,7 +288,7 @@
         <p class="honor-card__name">Rey Augustine Salas</p>
       </div>
       <div class="honor-card__divider" aria-hidden="true">
-        <span class="couple__monogram-amp">&amp;</span>
+        <span class="couple__monogram-amp"></span>
       </div>
       <div class="honor-card reveal-on-scroll">
         <span class="honor-card__icon" aria-hidden="true">
@@ -637,6 +630,6 @@
   <source src="assets/mp3/Kay Tagal Kitang Hinintay.mp3" type="audio/mpeg">
 </audio>
 
-<script src="js/script.js?v=5" defer></script>
+<script src="js/script.js?v=11" defer></script>
 </body>
 </html>

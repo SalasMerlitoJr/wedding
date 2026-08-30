@@ -419,15 +419,7 @@ function initGallery() {
   }
 
   items.forEach((item, index) => {
-    item.addEventListener("click", (e) => {
-      // Prevent opening lightbox if item was actively being dragged
-      if (item.closest('#carousel-ring')?.classList.contains('is-dragging')) return;
-      // In the 3D parallax slider, a click on a non-centered card should
-      // recenter it instead of opening the lightbox (handled by initGallerySlider).
-      const slide = item.closest('.gallery-slider__slide');
-      if (slide && !slide.classList.contains('gallery-slider__slide--active')) return;
-      openAt(index);
-    });
+    item.addEventListener("click", () => openAt(index));
   });
 
   closeBtn?.addEventListener("click", close);
@@ -646,7 +638,6 @@ function initGallery() {
     let stars = [];       // three parallax layers of drifting/twinkling stars
     let shooters = [];    // occasional shooting stars
     let mx = 0, my = 0;   // mouse, for a very light parallax drift
-    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const PALETTE = ["255,255,255", "228,207,160", "198,161,91", "180,200,170"];
 
@@ -686,7 +677,6 @@ function initGallery() {
       };
     }
     function maybeSpawnShooter() {
-      if (reduceMotion) return;
       if (Math.random() < 0.006 && shooters.length < 2) {
         const startX = Math.random() * width * 0.7;
         const startY = Math.random() * height * 0.4;
@@ -764,7 +754,10 @@ function initGallery() {
       });
 
       step();
-      if (!reduceMotion) requestAnimationFrame(draw);
+      // Keep looping unconditionally — this is a JS rAF loop, not a CSS
+      // animation, so it's the code itself (not a browser accessibility
+      // override) that would otherwise stop it after one frame.
+      requestAnimationFrame(draw);
     }
 
     resize();
@@ -799,145 +792,48 @@ function initGallery() {
     });
   }
 
-  /* ---------- Photo Gallery: 3D Parallax Coverflow + Tilt/Glow Cards ---------- */
-  function initGallerySlider() {
+  /* ---------- Photo Gallery: Infinite Marquee + Tilt/Glow Cards ---------- */
+  /* CSS-driven autoplay: the track is duplicated end-to-end and animated
+     with a linear, infinite CSS keyframe. There is no JS interval, no
+     pause-on-hover, and no click-to-navigate — it just scrolls, forever,
+     at a constant speed however many photos are in the list. Tilt + glow
+     are layered on top via pointer events but never touch the animation. */
+  function initGalleryMarquee() {
     const wrapper = document.getElementById("gallery-slider");
     const track = document.getElementById("gallery-track");
     const dataEl = document.getElementById("gallery-data");
     const template = document.getElementById("gallery-slide-template");
-    const prevBtn = document.getElementById("gallery-prev");
-    const nextBtn = document.getElementById("gallery-next");
-    const dotsWrap = document.getElementById("gallery-dots");
     if (!wrapper || !track || !dataEl || !template) return;
 
     let photos = [];
     try { photos = JSON.parse(dataEl.textContent); } catch (e) { photos = []; }
     if (!photos.length) return;
 
-    const slides = photos.map((photo, i) => {
+    function buildSlide(photo, index) {
       const node = template.content.firstElementChild.cloneNode(true);
       const btn = node.querySelector(".gallery__item");
       const img = node.querySelector("img");
-      btn.dataset.index = String(i);
+      btn.dataset.index = String(index);
       img.src = photo.src;
       img.alt = photo.alt || "";
-      track.appendChild(node);
       return node;
-    });
-
-    const dots = photos.map((_, i) => {
-      const dot = document.createElement("button");
-      dot.type = "button";
-      dot.className = "gallery-slider__dot";
-      dot.setAttribute("role", "tab");
-      dot.setAttribute("aria-label", `Go to photo ${i + 1}`);
-      dot.addEventListener("click", () => { setCenter(i); restartAutoplay(); });
-      dotsWrap?.appendChild(dot);
-      return dot;
-    });
-
-    const count = slides.length;
-    let center = 0;
-    let autoplayTimer = null;
-
-    function isMobile() { return window.matchMedia("(max-width: 720px)").matches; }
-
-    function shortestOffset(index) {
-      let diff = index - center;
-      if (diff > count / 2) diff -= count;
-      if (diff < -count / 2) diff += count;
-      return diff;
     }
 
-    function layout() {
-      const stepX = isMobile() ? 118 : 190;
-      const stepZ = isMobile() ? 90 : 150;
-      const rotate = 30;
-      const maxVisible = 3;
+    // Duplicate the full photo list back-to-back. Animating the track by
+    // exactly the width of ONE set (i.e. -50%) makes the loop seamless:
+    // by the time set #1 has scrolled fully out of view, set #2 is sitting
+    // exactly where set #1 started, and the animation restarts invisibly.
+    const sequence = [...photos, ...photos];
+    const fragment = document.createDocumentFragment();
+    sequence.forEach((photo, i) => fragment.appendChild(buildSlide(photo, i % photos.length)));
+    track.appendChild(fragment);
 
-      slides.forEach((slide, i) => {
-        const offset = shortestOffset(i);
-        const abs = Math.abs(offset);
-        slide.classList.toggle("gallery-slider__slide--active", offset === 0);
+    const cards = Array.from(track.querySelectorAll(".tilt-card"));
 
-        if (abs > maxVisible) {
-          slide.style.opacity = "0";
-          slide.style.pointerEvents = "none";
-          slide.style.transform = `translateX(${offset * stepX}px) translateZ(${-abs * stepZ}px)`;
-          slide.style.zIndex = String(count - abs);
-          return;
-        }
-
-        const tx = offset * stepX;
-        const tz = -abs * stepZ;
-        const ry = offset * -rotate;
-        const scale = 1 - abs * 0.08;
-        slide.style.transform = `translateX(${tx}px) translateZ(${tz}px) rotateY(${ry}deg) scale(${scale})`;
-        slide.style.opacity = String(1 - abs * 0.28);
-        slide.style.filter = abs === 0 ? "none" : `blur(${abs * 0.6}px) brightness(${1 - abs * 0.12})`;
-        slide.style.zIndex = String(count - abs);
-        slide.style.pointerEvents = "auto";
-      });
-
-      dots.forEach((dot, i) => dot.classList.toggle("is-active", i === center));
-    }
-
-    function setCenter(index) {
-      center = ((index % count) + count) % count;
-      layout();
-    }
-
-    function startAutoplay() {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      stopAutoplay();
-      autoplayTimer = setInterval(() => setCenter(center + 1), 4200);
-    }
-    function stopAutoplay() { if (autoplayTimer) clearInterval(autoplayTimer); autoplayTimer = null; }
-    function restartAutoplay() { stopAutoplay(); startAutoplay(); }
-
-    prevBtn?.addEventListener("click", () => { setCenter(center - 1); restartAutoplay(); });
-    nextBtn?.addEventListener("click", () => { setCenter(center + 1); restartAutoplay(); });
-
-    // Click a side card to bring it to center
-    slides.forEach((slide, i) => {
-      slide.addEventListener("click", (e) => {
-        if (!slide.classList.contains("gallery-slider__slide--active")) {
-          e.preventDefault();
-          e.stopPropagation();
-          setCenter(i);
-          restartAutoplay();
-        }
-      }, true);
-    });
-
-    // Drag / swipe to navigate
-    let dragging = false, startX = 0, moved = false;
-    const viewport = wrapper.querySelector(".gallery-slider__viewport");
-    viewport?.addEventListener("pointerdown", (e) => {
-      dragging = true; moved = false; startX = e.clientX;
-      stopAutoplay();
-    });
-    window.addEventListener("pointermove", (e) => {
-      if (!dragging) return;
-      if (Math.abs(e.clientX - startX) > 6) moved = true;
-    });
-    window.addEventListener("pointerup", (e) => {
-      if (!dragging) return;
-      dragging = false;
-      if (moved) {
-        const delta = e.clientX - startX;
-        if (delta < -40) setCenter(center + 1);
-        else if (delta > 40) setCenter(center - 1);
-      }
-      restartAutoplay();
-    });
-
-    // 3D tilt + cursor-follow glow on the active card
-    slides.forEach((slide) => {
-      const card = slide.querySelector(".tilt-card");
-      if (!card) return;
+    // 3D tilt + cursor-follow glow — works on any card at any time,
+    // including mid-scroll. Purely visual, doesn't touch playback.
+    cards.forEach((card) => {
       card.addEventListener("pointermove", (e) => {
-        if (!slide.classList.contains("gallery-slider__slide--active")) return;
         const rect = card.getBoundingClientRect();
         const px = (e.clientX - rect.left) / rect.width;
         const py = (e.clientY - rect.top) / rect.height;
@@ -954,12 +850,47 @@ function initGallery() {
       });
     });
 
-    wrapper.addEventListener("mouseenter", stopAutoplay);
-    wrapper.addEventListener("mouseleave", startAutoplay);
-    window.addEventListener("resize", debounce(layout, 150));
+    // Constant scroll speed (px/sec) — duration is derived from the
+    // actual rendered width so more photos just make a longer loop
+    // instead of a faster/slower one.
+    //
+    // This is driven by requestAnimationFrame rather than a CSS
+    // @keyframes animation. Some browsers (e.g. Chrome's own "Force
+    // reduce motion" accessibility setting) silently collapse CSS
+    // animation durations to near-zero, which no amount of author CSS
+    // can override — that's what was making the marquee look static.
+    // A plain rAF loop writing `transform` directly isn't a CSS
+    // Animation/Transition, so it isn't subject to that override and
+    // keeps scrolling regardless of the visitor's motion settings.
+    const PIXELS_PER_SECOND = 55;
+    let setWidth = 0;
+    let offset = 0;
+    let lastTime = null;
+    let rafId = null;
 
-    layout();
-    startAutoplay();
+    function measure() {
+      setWidth = track.scrollWidth / 2; // width of a single (non-duplicated) run
+    }
+
+    function frame(now) {
+      if (lastTime === null) lastTime = now;
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+      if (setWidth > 0) {
+        offset = (offset + PIXELS_PER_SECOND * dt) % setWidth;
+        track.style.transform = `translateX(${-offset}px)`;
+      }
+      rafId = requestAnimationFrame(frame);
+    }
+
+    // The gallery lives inside <main id="invitation" hidden>, which stays
+    // hidden (zero width) until the seal-gate is opened, so re-measure
+    // whenever that happens (and again on resize).
+    rafId = requestAnimationFrame(frame);
+    measure();
+    window.addEventListener("invitation:opened", () => { lastTime = null; measure(); }, { once: true });
+    window.addEventListener("load", measure);
+    window.addEventListener("resize", debounce(measure, 200));
   }
 
   /* ---------- Footer year ---------- */
@@ -978,8 +909,8 @@ function initGallery() {
     initScrollReveal();
     initCountdown();
     initMapLink();
-    // initRadialCarousel(); // replaced with 3D parallax gallery slider
-    initGallerySlider();
+    // initRadialCarousel(); // replaced with 3D parallax gallery slider, now a marquee
+    initGalleryMarquee();
     initGallery();
     initExpandCards();
     initRSVP();
