@@ -473,7 +473,7 @@ function initGallery() {
       });
     });
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       let valid = true;
 
@@ -506,22 +506,34 @@ function initGallery() {
         guests: guestsEl.value,
         attendance: attendance.value,
         message: document.getElementById("rsvp-message")?.value.trim() || "",
-        submittedAt: new Date().toISOString(),
       };
 
-      const responses = safeGetJSON("wedding-rsvps", []);
-      responses.push(data);
-      safeSetJSON("wedding-rsvps", responses);
+      const submitBtn = form.querySelector(".rsvp-form__submit");
+      if (submitBtn) submitBtn.disabled = true;
 
-      if (modalText) {
-        modalText.textContent =
-          data.attendance === "joyfully-accept"
-            ? `Thank you, ${data.name.split(" ")[0]}! We can't wait to celebrate with you and ${Number(data.guests) > 1 ? "your guests" : "you"}.`
-            : `Thank you for letting us know, ${data.name.split(" ")[0]}. You'll be in our hearts on the day.`;
+      try {
+        const res = await fetch("/api/rsvp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        if (!res.ok) throw new Error("Request failed");
+
+        if (modalText) {
+          modalText.textContent =
+            data.attendance === "joyfully-accept"
+              ? `Thank you, ${data.name.split(" ")[0]}! We can't wait to celebrate with you and ${Number(data.guests) > 1 ? "your guests" : "you"}.`
+              : `Thank you for letting us know, ${data.name.split(" ")[0]}. You'll be in our hearts on the day.`;
+        }
+        openModal(modal);
+        form.reset();
+        [nameEl, emailEl, phoneEl, guestsEl].forEach((el) => el?.classList.remove("is-invalid"));
+      } catch (err) {
+        if (attendanceError) attendanceError.textContent = "Sorry, something went wrong sending your RSVP. Please try again.";
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
       }
-      openModal(modal);
-      form.reset();
-      [nameEl, emailEl, phoneEl, guestsEl].forEach((el) => el?.classList.remove("is-invalid"));
     });
 
     function openModal(el) {
@@ -553,8 +565,7 @@ function initGallery() {
       { name: "Ate Trixia June", message: "Congratulations Merlito and Daisa! Can't wait to celebrate with you." },
     ];
 
-    function render() {
-      const stored = safeGetJSON("wedding-guestbook", []);
+    function renderEntries(stored) {
       const all = [...seed, ...stored].slice(-30).reverse();
       wall.innerHTML = "";
       all.forEach((entry) => {
@@ -570,7 +581,17 @@ function initGallery() {
       });
     }
 
-    form.addEventListener("submit", (e) => {
+    async function loadAndRender() {
+      try {
+        const res = await fetch("/api/guestbook");
+        const stored = res.ok ? await res.json() : [];
+        renderEntries(stored);
+      } catch (err) {
+        renderEntries([]);
+      }
+    }
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const nameEl = document.getElementById("gb-name");
       const msgEl = document.getElementById("gb-message");
@@ -578,14 +599,26 @@ function initGallery() {
       const message = msgEl.value.trim();
       if (!name || !message) return;
 
-      const stored = safeGetJSON("wedding-guestbook", []);
-      stored.push({ name, message });
-      safeSetJSON("wedding-guestbook", stored);
-      form.reset();
-      render();
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        const res = await fetch("/api/guestbook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, message }),
+        });
+        if (!res.ok) throw new Error("Request failed");
+        form.reset();
+        await loadAndRender();
+      } catch (err) {
+        alert("Sorry, something went wrong leaving your wish. Please try again.");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
     });
 
-    render();
+    loadAndRender();
   }
 
   /* ---------- Music player ---------- */
