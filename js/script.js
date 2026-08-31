@@ -621,12 +621,33 @@ function initGallery() {
     loadAndRender();
   }
 
-  /* ---------- Music player ---------- */
+  /* ---------- Music player (playlist: song 1 -> song 2 -> loop) ---------- */
   function initMusicPlayer() {
     const btn = document.getElementById("music-toggle");
     const label = document.getElementById("music-label");
     const audio = document.getElementById("bg-audio");
     if (!btn || !audio) return;
+
+    // Add your two song paths here, in play order.
+    const playlist = [
+      "assets/mp3/Kay Tagal Kitang Hinintay.mp3",
+      "assets/mp3/To The Bone.mp3", // <-- replace with your actual second file
+    ];
+    let trackIndex = 0;
+
+    function loadTrack(index) {
+      audio.src = playlist[index];
+    }
+
+    loadTrack(trackIndex);
+
+    audio.addEventListener("ended", () => {
+      trackIndex = (trackIndex + 1) % playlist.length; // advance, loop back to song 1 after the last
+      loadTrack(trackIndex);
+      audio.play().catch(() => {
+        if (label) label.textContent = "Music Unavailable";
+      });
+    });
 
     btn.addEventListener("click", () => {
       const playing = btn.getAttribute("aria-pressed") === "true";
