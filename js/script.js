@@ -55,7 +55,7 @@
     openBtn?.addEventListener("click", () => {
       openBtn.classList.add("is-opening");
       openBtn.disabled = true;
-      setTimeout(() => openInvitation(false), 320);
+      setTimeout(() => openInvitation(false), 720);
     });
 
     function openInvitation(instant) {
